@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); height: 100%; -unity-text-align: middle-left; flex-shrink: 0; position: relative;">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; min-height: 100%; height: 100%;">
+            <ui:VisualElement name="GroupList" style="flex-grow: 1; background-color: rgb(67, 67, 67); flex-direction: column; -unity-text-outline-width: 20px; -unity-text-outline-color: rgb(130, 0, 0); border-left-width: 0.5px; border-right-width: 0.5px; border-top-width: 0.5px; border-bottom-width: 0.5px; border-left-color: rgb(128, 128, 128); border-right-color: rgb(128, 128, 128); border-top-color: rgb(128, 128, 128); border-bottom-color: rgb(128, 128, 128); max-width: 250px; min-height: 0; height: auto; max-height: none; min-width: 184px;">
+                <ui:Label tabindex="-1" text="MaterialGroup" display-tooltip-when-elided="true" style="-unity-text-outline-color: rgba(255, 255, 255, 0); -unity-text-outline-width: 0; color: rgb(255, 255, 255);" />
+                <ui:ScrollView name="GroupScrollview" style="max-width: none; width: 100%; border-left-color: rgb(255, 0, 0); border-right-color: rgb(255, 0, 0); border-top-color: rgb(255, 0, 0); border-bottom-color: rgb(255, 0, 0); height: 100%;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="MaterialList" style="flex-grow: 1; background-color: rgb(101, 101, 101); flex-direction: column; border-left-color: rgb(101, 101, 101); border-right-color: rgb(101, 101, 101); border-top-color: rgb(101, 101, 101); border-bottom-color: rgb(101, 101, 101); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; height: auto; min-height: 0;">
+                <ui:Label tabindex="-1" text="MaterialList" display-tooltip-when-elided="true" style="-unity-text-outline-color: rgba(255, 255, 255, 0); -unity-text-outline-width: 0; color: rgb(255, 255, 255);" />
+                <ui:ScrollView name="MaterialScrollView" style="flex-grow: 1;">
+                    <ui:VisualElement name="MaterialContent" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

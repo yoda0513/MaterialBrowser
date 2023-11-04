@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/TargetManagementAsset/YodaSystem/OtherSystem/EditorSystem/Editor/MaterialBrowser/MaterialBrowserSettingWindow.uss?fileID=7433441132597879392&amp;guid=00946d30ac4a6d84ba33baaa495f7c98&amp;type=3#MaterialBrowserSettingWindow" />
+    <ui:VisualElement style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-shrink: 0; height: 100%; width: 100%;">
+        <ui:Label tabindex="-1" text="Directory to search" display-tooltip-when-elided="true" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; -unity-font-style: bold; font-size: 18px;" />
+        <ui:Label tabindex="-1" text="検索するディレクトリのパスを設定してください。（例:Assets/TargetMaterialFolder）" display-tooltip-when-elided="true" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; -unity-font-style: normal; font-size: 11px; white-space: normal;" />
+        <ui:ListView focusable="true" show-add-remove-footer="true" show-foldout-header="true" show-border="true" binding-path="items" />
+    </ui:VisualElement>
+</ui:UXML>

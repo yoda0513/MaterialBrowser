@@ -1,0 +1,17 @@
+{
+    "name": "jp.button-game.materialbrowser",
+    "displayName": "MaterialBrowser",
+    "version": "1.0.0",
+    "unity": "2022.3",
+    "description": "プロジェクト内の任意のフォルダー内のマテリアルを一覧表示します。",
+   
+    "dependencies": {
+     
+   },
+
+    "author": {
+      "name": "Yoda",
+      "email": "gnito397@gmail.com",
+      "url": "https://button-game.jp"
+    }
+  }
