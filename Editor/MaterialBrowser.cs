@@ -34,26 +34,6 @@ public class MaterialList : EditorWindow
 
 
 
-        /*
-        // Each editor window contains a root VisualElement object
-        
-
-        string path = AssetDatabase.GetAssetPath(m_VisualTreeAsset);
-        packageBasePath = Regex.Match(path, "(.+" + Regex.Escape("/") + ").*?" + Regex.Escape(".") + ".*?$").Groups[1].Value;
-
-        
-
-        // Instantiate UXML
-        VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
-        MaterialGroupButton = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(packageBasePath + "MaterialGroupRow.uxml");
-        MaterialRow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(packageBasePath + "MaterialRow.uxml");
-        labelFromUXML.StretchToParentWidth();
-        labelFromUXML.StretchToParentSize();
-        root.Add(labelFromUXML);
-
-        
-        GenerateMaterialGroupBar();
-        */
 
         InitializeWindow();
 
@@ -101,7 +81,6 @@ public class MaterialList : EditorWindow
             }
         }
 
-        Debug.Log("hey");
         GenerateMaterialGroupBar();
 
     }
@@ -228,10 +207,12 @@ public class MaterialList : EditorWindow
             
 
             var icon = AssetPreview.GetAssetPreview(AssetDatabase.LoadAssetAtPath<Material>(path));
+            /*
             while (AssetPreview.IsLoadingAssetPreviews())
             {
             }
 
+            */
 
             
             string name = Regex.Match(path, ".+" + Regex.Escape("/") + "(.*?)" + Regex.Escape(".mat")).Groups[1].Value;
