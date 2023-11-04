@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor.UIElements;
+using System.IO;
 
 public class MaterialBrowserSettingWindow : EditorWindow
 {
@@ -36,9 +37,18 @@ public class MaterialBrowserSettingWindow : EditorWindow
         var packageBasePath = Regex.Match(path, "(.+" + Regex.Escape("/") + ").*?" + Regex.Escape(".") + ".*?$").Groups[1].Value;
         textFieldAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(packageBasePath + "TextField.uxml");
 
+        
+
         var optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
         if (optionData == null)
         {
+            if (!Directory.Exists(MaterialList.settingdataFolder))
+            {
+                Directory.CreateDirectory(MaterialList.settingdataFolder);
+                AssetDatabase.ImportAsset(MaterialList.settingdataFolder);
+            }
+
+
             optionData = CreateInstance<MaterialBrowserOptionData>();
             AssetDatabase.CreateAsset(optionData, MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
             AssetDatabase.Refresh();

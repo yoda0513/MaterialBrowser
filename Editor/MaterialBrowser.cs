@@ -11,6 +11,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Threading.Tasks;
 using UnityEngine.NVIDIA;
+using System.IO;
+using DG.Tweening.Plugins.Core.PathCore;
 
 public class MaterialList : EditorWindow
 {
@@ -117,11 +119,19 @@ public class MaterialList : EditorWindow
 
     private void GenerateMaterialGroupBar()
     {
+        
         MaterialBrowserOptionData optionData =  AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
         if (optionData == null)
         {
+            if (!Directory.Exists(settingdataFolder))
+            {
+                Directory.CreateDirectory(settingdataFolder);
+                AssetDatabase.ImportAsset(settingdataFolder);
+            }
+
+
             optionData = CreateInstance<MaterialBrowserOptionData>();
-            AssetDatabase.CreateAsset(optionData, packageBasePath + "optiondata.asset");
+            AssetDatabase.CreateAsset(optionData, settingdataFolder + "/" + settindataname);
             AssetDatabase.Refresh();
         }
 
