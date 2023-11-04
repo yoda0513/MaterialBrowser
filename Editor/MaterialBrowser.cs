@@ -1,18 +1,10 @@
-
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Threading.Tasks;
-using UnityEngine.NVIDIA;
-using System.IO;
-using DG.Tweening.Plugins.Core.PathCore;
 
 public class MaterialList : EditorWindow
 {
