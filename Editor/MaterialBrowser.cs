@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -134,7 +135,28 @@ public class MaterialList : EditorWindow
 
         if (diraug.Length == 0) return;
 
-        var textfiles = AssetDatabase.FindAssets("t:folder", diraug).ToList().Select(x => AssetDatabase.GUIDToAssetPath(x));
+        var textfiles = AssetDatabase.FindAssets("t:folder", diraug).ToList().Where(x => 
+        {
+            //直下のフォルダのみ取り出す。
+            string path = AssetDatabase.GUIDToAssetPath(x);
+            string basepath = "";
+            
+            if (path == "Assets")
+            {
+                basepath = "Assets";
+            }
+            else
+            {
+                basepath = Regex.Match(path, "(.+)" + Regex.Escape("/") + ".*?$").Groups[1].Value;
+            }
+            
+            Debug.Log(basepath);
+            return diraug.ToList().Contains(basepath);
+            
+            
+        })
+            .Select(x => AssetDatabase.GUIDToAssetPath(x));
+
         int count = 0;
         textfiles.ToList().Select(x =>
         {
