@@ -150,7 +150,6 @@ public class MaterialList : EditorWindow
                 basepath = Regex.Match(path, "(.+)" + Regex.Escape("/") + ".*?$").Groups[1].Value;
             }
             
-            Debug.Log(basepath);
             return diraug.ToList().Contains(basepath);
             
             
