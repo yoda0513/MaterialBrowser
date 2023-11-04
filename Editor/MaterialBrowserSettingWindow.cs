@@ -36,11 +36,11 @@ public class MaterialBrowserSettingWindow : EditorWindow
         var packageBasePath = Regex.Match(path, "(.+" + Regex.Escape("/") + ").*?" + Regex.Escape(".") + ".*?$").Groups[1].Value;
         textFieldAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(packageBasePath + "TextField.uxml");
 
-        var optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(packageBasePath + "optiondata.asset");
+        var optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
         if (optionData == null)
         {
             optionData = CreateInstance<MaterialBrowserOptionData>();
-            AssetDatabase.CreateAsset(optionData, packageBasePath + "optiondata.asset");
+            AssetDatabase.CreateAsset(optionData, MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
             AssetDatabase.Refresh();
         }
 

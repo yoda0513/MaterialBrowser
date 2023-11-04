@@ -10,6 +10,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Threading.Tasks;
+using UnityEngine.NVIDIA;
 
 public class MaterialList : EditorWindow
 {
@@ -20,6 +21,9 @@ public class MaterialList : EditorWindow
 
     private VisualElement MaterialListContent;
     private string packageBasePath;
+
+    public const string settingdataFolder = "Assets/Resources";
+    public const string settindataname = "setting.asset";
 
     [MenuItem("Tools/MaterialList %m")]
     public static void ShowMaterialList()
@@ -113,7 +117,7 @@ public class MaterialList : EditorWindow
 
     private void GenerateMaterialGroupBar()
     {
-        MaterialBrowserOptionData optionData =  AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(packageBasePath + "optiondata.asset");
+        MaterialBrowserOptionData optionData =  AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
         if (optionData == null)
         {
             optionData = CreateInstance<MaterialBrowserOptionData>();

@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76da8787b6832e14093ff578dba44d07, type: 3}
   m_Name: optiondata
   m_EditorClassIdentifier: 
-  items:
-  - path: Assets/TargetMaterialFolder
+  items: []
