@@ -7,6 +7,11 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Object = UnityEngine.Object;
+
 public class MaterialList : EditorWindow
 {
     [SerializeField]
@@ -194,6 +199,8 @@ public class MaterialList : EditorWindow
     {
         var materialRow = MaterialRow.Instantiate();
         VisualElement element = new VisualElement();
+        element.name = MaterialName;
+
         element.Add(materialRow);
 
         element.Query("Image").First().style.backgroundImage = new StyleBackground(Icon);
@@ -231,9 +238,20 @@ public class MaterialList : EditorWindow
         {
             
             string path = AssetDatabase.GUIDToAssetPath(x);
-            
+
+            Debug.Log(AssetPreview.IsLoadingAssetPreviews());
 
             var icon = AssetPreview.GetAssetPreview(AssetDatabase.LoadAssetAtPath<Material>(path));
+            Material target = AssetDatabase.LoadAssetAtPath<Material>(path);
+            string name = Regex.Match(path, ".+" + Regex.Escape("/") + "(.*?)" + Regex.Escape(".mat")).Groups[1].Value;
+
+
+            GenerateMaterialItem(icon, name, path);
+
+
+            //AssetDatabase.in
+            Debug.Log(AssetPreview.IsLoadingAssetPreviews());
+            EditorCoroutine.start(PreviewLoad(rootVisualElement , target.GetInstanceID(), name, path));
             /*
             while (AssetPreview.IsLoadingAssetPreviews())
             {
@@ -241,12 +259,60 @@ public class MaterialList : EditorWindow
 
             */
 
-            
-            string name = Regex.Match(path, ".+" + Regex.Escape("/") + "(.*?)" + Regex.Escape(".mat")).Groups[1].Value;
-            
 
-            GenerateMaterialItem(icon, name, path);
+            
         });
+    }
+
+    static IEnumerator PreviewLoad(VisualElement root, int instanceID, string materialname, string path)
+    {
+        int index = 0;
+        while(AssetPreview.IsLoadingAssetPreview(instanceID))
+        {
+            index++;
+            yield return null;
+        }
+
+        root.Query(materialname).First().Query("Image").First().style.backgroundImage = new StyleBackground(AssetPreview.GetAssetPreview(AssetDatabase.LoadAssetAtPath<Material>(path)));
+
+
+    }
+}
+
+public class EditorCoroutine
+{
+    public static EditorCoroutine start(IEnumerator _routine)
+    {
+        EditorCoroutine coroutine = new EditorCoroutine(_routine);
+        coroutine.start();
+        return coroutine;
+    }
+    readonly IEnumerator routine;
+    EditorCoroutine(IEnumerator _routine)
+    {
+        routine = _routine;
+    }
+    void start()
+    {
+        //Debug.Log("start");
+        EditorApplication.update += update;
+    }
+    public void stop()
+    {
+        //Debug.Log("stop");
+        EditorApplication.update -= update;
+    }
+    void update()
+    {
+        /* NOTE: no need to try/catch MoveNext,
+         * if an IEnumerator throws its next iteration returns false.
+         * Also, Unity probably catches when calling EditorApplication.update.
+         */
+        //Debug.Log("update");
+        if (!routine.MoveNext())
+        {
+            stop();
+        }
     }
 }
 
