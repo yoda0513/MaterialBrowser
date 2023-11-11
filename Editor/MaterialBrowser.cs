@@ -44,6 +44,16 @@ public class MaterialList : EditorWindow
         //
         var toolbar = new Toolbar();
 
+        var menu = new ToolbarMenu();
+        menu.menu.ClearItems();
+        menu.text = "Folder";
+        menu.name = "ToolberMenuName";
+        
+        
+        toolbar.Add(menu);
+
+        toolbar.Add(new ToolbarSpacer());
+
         var btn1 = new ToolbarButton { text = "Option" };
         toolbar.Add(btn1);
 
@@ -61,31 +71,63 @@ public class MaterialList : EditorWindow
 
         rootVisualElement.Add(toolbar);
 
+        SetToolberMenu();
+
+    }
+
+    private void SetToolberMenu()
+    {
+        MaterialBrowserOptionData optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
+
+        if (optionData == null)
+        {
+            if (!Directory.Exists(settingdataFolder))
+            {
+                Directory.CreateDirectory(settingdataFolder);
+                AssetDatabase.ImportAsset(settingdataFolder);
+            }
+
+
+            optionData = CreateInstance<MaterialBrowserOptionData>();
+            AssetDatabase.CreateAsset(optionData, settingdataFolder + "/" + settindataname);
+            AssetDatabase.Refresh();
+        }
+
+        var menu = rootVisualElement.Query<ToolbarMenu>().First();
+        menu.menu.ClearItems();
+
+
+        optionData.items.Where(x => x.path != "")
+            .Select((x,index) =>
+            {
+                if ((x.path).Contains("/"))
+                {
+                    return (Regex.Match(x.path, ".*" + Regex.Escape("/") + "(.*?$)").Groups[1].Value,index);
+                }
+                else
+                {
+                    return ("Assets",index);
+                }
+                
+            }).ToList()
+            .ForEach(x => 
+            {
+                menu.menu.AppendAction(x.Item1, action => GenerateMaterialGroupBar(x.index));
+            });
+        
+        
+
+
+
+
     }
 
     public void ReloadWindow()
     {
-        MaterialListContent = rootVisualElement.Query("MaterialContent");
+        
 
-        if (MaterialListContent != null)
-        {
-            while (MaterialListContent.childCount != 0)
-            {
-                MaterialListContent.RemoveAt(0);
-            }
-        }
-
-
-        var groupScrollView = rootVisualElement.Query("GroupScrollview").First();
-        if (groupScrollView != null)
-        {
-            while (groupScrollView.childCount != 0)
-            {
-                groupScrollView.RemoveAt(0);
-            }
-        }
-
-        GenerateMaterialGroupBar();
+        GenerateMaterialGroupBar(-1);
+        SetToolberMenu();
 
     }
 
@@ -109,15 +151,39 @@ public class MaterialList : EditorWindow
         rootVisualElement.Add(labelFromUXML);
 
         MaterialListContent = rootVisualElement.Query("MaterialContent");
-        GenerateMaterialGroupBar();
-
+        GenerateMaterialGroupBar(-1);
+        
     }
 
 
 
-    private void GenerateMaterialGroupBar()
+    private void GenerateMaterialGroupBar(int index)
     {
-        
+        //画面の要素をすべて消す
+
+        MaterialListContent = rootVisualElement.Query("MaterialContent");
+
+        if (MaterialListContent != null)
+        {
+            while (MaterialListContent.childCount != 0)
+            {
+                MaterialListContent.RemoveAt(0);
+            }
+        }
+
+
+        var groupScrollView = rootVisualElement.Query("GroupScrollview").First();
+        if (groupScrollView != null)
+        {
+            while (groupScrollView.childCount != 0)
+            {
+                groupScrollView.RemoveAt(0);
+            }
+        }
+
+
+
+
         MaterialBrowserOptionData optionData =  AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
         if (optionData == null)
         {
@@ -133,18 +199,44 @@ public class MaterialList : EditorWindow
             AssetDatabase.Refresh();
         }
 
-        string[] diraug = optionData.items.Where(x => x.path != "").Select(x => x.path).ToArray();
+        string[] diraug = null;
+        if (optionData.items.Where(x => x.path != "").Count() == 0) return;
+
+        if(index == -1)
+        {
+            diraug = new string[] { optionData.items.Where(x => x.path != "").Select(x => x.path).First() };
+        }
+        else
+        {
+            diraug = new string[] { optionData.items[index].path }; 
+        }
+
         
 
 
 
-        if (diraug.Length == 0) return;
+
+        if (diraug == null || diraug.Length == 0) return;
+        Label materialLabel = rootVisualElement.Query<Label>("GroupLabel").First();
+        
+        if (diraug[0].Contains("/"))
+        {
+
+            materialLabel.text = Regex.Match(diraug[0], "(.+)" + Regex.Escape("/") + "(.*?$)").Groups[2].Value;
+        }
+        else
+        {
+            materialLabel.text = "Assets";
+        }
+
 
         var textfiles = AssetDatabase.FindAssets("t:folder", diraug).ToList().Where(x => 
         {
             //直下のフォルダのみ取り出す。
             string path = AssetDatabase.GUIDToAssetPath(x);
             string basepath = "";
+
+            
             
             if (path == "Assets")
             {
@@ -152,7 +244,9 @@ public class MaterialList : EditorWindow
             }
             else
             {
-                basepath = Regex.Match(path, "(.+)" + Regex.Escape("/") + ".*?$").Groups[1].Value;
+                var match = Regex.Match(path, "(.+)" + Regex.Escape("/") + "(.*?$)");
+                basepath = match.Groups[1].Value;
+
             }
             
             return diraug.ToList().Contains(basepath);
@@ -201,9 +295,7 @@ public class MaterialList : EditorWindow
         VisualElement element = new VisualElement();
         element.name = MaterialName;
 
-        element.Add(materialRow);
-
-        element.Query("Image").First().style.backgroundImage = new StyleBackground(Icon);
+        element.Add(materialRow);        element.Query("Image").First().style.backgroundImage = new StyleBackground(Icon);
         element.Query<Label>("MaterialName").First().text = MaterialName;
         element.Query<Button>("SelectButton").First().clicked += () => 
         {
@@ -239,7 +331,6 @@ public class MaterialList : EditorWindow
             
             string path = AssetDatabase.GUIDToAssetPath(x);
 
-            Debug.Log(AssetPreview.IsLoadingAssetPreviews());
 
             var icon = AssetPreview.GetAssetPreview(AssetDatabase.LoadAssetAtPath<Material>(path));
             Material target = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -250,7 +341,7 @@ public class MaterialList : EditorWindow
 
 
             //AssetDatabase.in
-            Debug.Log(AssetPreview.IsLoadingAssetPreviews());
+            
             EditorCoroutine.start(PreviewLoad(rootVisualElement , target.GetInstanceID(), name, path));
             /*
             while (AssetPreview.IsLoadingAssetPreviews())
