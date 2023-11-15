@@ -25,7 +25,7 @@ public class MaterialList : EditorWindow
     public const string settingdataFolder = "Assets/Resources";
     public const string settindataname = "setting.asset";
 
-    [MenuItem("Tools/MaterialList %m")]
+    [MenuItem("Tools/MaterialBrowser %m")]
     public static void ShowMaterialList()
     {
         MaterialList wnd = GetWindow<MaterialList>();
