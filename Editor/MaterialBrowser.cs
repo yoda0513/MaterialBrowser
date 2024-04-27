@@ -25,6 +25,8 @@ public class MaterialList : EditorWindow
     public const string settingdataFolder = "Assets/Resources";
     public const string settindataname = "setting.asset";
 
+
+    //スタートアップ
     [MenuItem("Tools/MaterialBrowser %m")]
     public static void ShowMaterialList()
     {
@@ -32,16 +34,22 @@ public class MaterialList : EditorWindow
         wnd.titleContent = new GUIContent("MaterialBrowser");
     }
 
+
+
+
+    //画面生成時に自動で呼ばれる 各種ウィンドウの設定
     public void CreateGUI()
     {
         minSize = new Vector2(200, 200);
 
 
 
-
+        //マテリアルの一覧表を生成
         InitializeWindow();
 
-        //
+
+
+        //画面上部のツールバーを生成
         var toolbar = new Toolbar();
 
         var menu = new ToolbarMenu();
@@ -70,12 +78,14 @@ public class MaterialList : EditorWindow
 
 
         rootVisualElement.Add(toolbar);
-
+        //ツールバーのFolder項目をリセット
         SetToolberMenu();
 
     }
 
-    private void SetToolberMenu()
+
+    //オプションを読み込む
+    public static MaterialBrowserOptionData LoadoptionData()
     {
         MaterialBrowserOptionData optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
 
@@ -92,6 +102,17 @@ public class MaterialList : EditorWindow
             AssetDatabase.CreateAsset(optionData, settingdataFolder + "/" + settindataname);
             AssetDatabase.Refresh();
         }
+
+        return optionData;
+    }
+
+
+
+
+
+    private void SetToolberMenu()
+    {
+        MaterialBrowserOptionData optionData = LoadoptionData();
 
         var menu = rootVisualElement.Query<ToolbarMenu>().First();
         menu.menu.ClearItems();
@@ -114,29 +135,19 @@ public class MaterialList : EditorWindow
             {
                 menu.menu.AppendAction(x.Item1, action => GenerateMaterialGroupBar(x.index));
             });
-        
-        
-
-
-
-
     }
 
+    //画面を再構築する。設定画面から戻った際にこれを呼び出す。
     public void ReloadWindow()
     {
-        
-
         GenerateMaterialGroupBar(-1);
         SetToolberMenu();
-
     }
 
+
+    //起動時の画面生成
     public void InitializeWindow()
     {
-        
-        
-
-
         string path = AssetDatabase.GetAssetPath(m_VisualTreeAsset);
         packageBasePath = Regex.Match(path, "(.+" + Regex.Escape("/") + ").*?" + Regex.Escape(".") + ".*?$").Groups[1].Value;
 
@@ -156,7 +167,7 @@ public class MaterialList : EditorWindow
     }
 
 
-
+    //マテリアルのリストの生成
     private void GenerateMaterialGroupBar(int index)
     {
         //画面の要素をすべて消す
@@ -171,7 +182,7 @@ public class MaterialList : EditorWindow
             }
         }
 
-
+        //ScrollViewの要素をすべて消す
         var groupScrollView = rootVisualElement.Query("GroupScrollview").First();
         if (groupScrollView != null)
         {
@@ -184,21 +195,9 @@ public class MaterialList : EditorWindow
 
 
 
-        MaterialBrowserOptionData optionData =  AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(settingdataFolder + "/" + settindataname);
-        if (optionData == null)
-        {
-            if (!Directory.Exists(settingdataFolder))
-            {
-                Directory.CreateDirectory(settingdataFolder);
-                AssetDatabase.ImportAsset(settingdataFolder);
-            }
+        MaterialBrowserOptionData optionData = LoadoptionData();
 
-
-            optionData = CreateInstance<MaterialBrowserOptionData>();
-            AssetDatabase.CreateAsset(optionData, settingdataFolder + "/" + settindataname);
-            AssetDatabase.Refresh();
-        }
-
+        //設定ファイルのフォルダリストの読み込み
         string[] diraug = null;
         if (optionData.items.Where(x => x.path != "").Count() == 0) return;
 
@@ -289,6 +288,16 @@ public class MaterialList : EditorWindow
         });
     }
 
+
+
+
+
+
+
+
+
+
+
     private void GenerateMaterialItem(Texture2D Icon,string MaterialName, string path)
     {
         var materialRow = MaterialRow.Instantiate();
@@ -315,6 +324,15 @@ public class MaterialList : EditorWindow
         };
         MaterialListContent.Add(element);
     }
+
+
+
+
+
+
+
+
+
 
     private void SetMaterialList(string path)
     {
@@ -354,6 +372,14 @@ public class MaterialList : EditorWindow
             
         });
     }
+
+
+
+
+
+
+
+
 
     static IEnumerator PreviewLoad(VisualElement root, int instanceID, string materialname, string path)
     {

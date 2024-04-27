@@ -35,22 +35,9 @@ public class MaterialBrowserSettingWindow : EditorWindow
         var packageBasePath = Regex.Match(path, "(.+" + Regex.Escape("/") + ").*?" + Regex.Escape(".") + ".*?$").Groups[1].Value;
         textFieldAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(packageBasePath + "TextField.uxml");
 
-        
-
-        var optionData = AssetDatabase.LoadAssetAtPath<MaterialBrowserOptionData>(MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
-        if (optionData == null)
-        {
-            if (!Directory.Exists(MaterialList.settingdataFolder))
-            {
-                Directory.CreateDirectory(MaterialList.settingdataFolder);
-                AssetDatabase.ImportAsset(MaterialList.settingdataFolder);
-            }
 
 
-            optionData = CreateInstance<MaterialBrowserOptionData>();
-            AssetDatabase.CreateAsset(optionData, MaterialList.settingdataFolder + "/" + MaterialList.settindataname);
-            AssetDatabase.Refresh();
-        }
+        var optionData = MaterialList.LoadoptionData();
 
         var serializedObject = new SerializedObject(optionData);
 

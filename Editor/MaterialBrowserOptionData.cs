@@ -9,7 +9,8 @@ public class MaterialBrowserOptionData : ScriptableObject
     [SerializeField]
     public List<Item> items = new List<Item>();
 
-
+    [SerializeField]
+    public string ShaderName = "";
 
 }
 
